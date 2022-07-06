@@ -67,7 +67,7 @@ app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, func
                 return [4 /*yield*/, response];
             case 1:
                 body = (_a = (_b.sent()).PostFound) === null || _a === void 0 ? void 0 : _a.Body;
-                res.send(body);
+                res.send("hello");
                 return [2 /*return*/];
         }
     });

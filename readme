@@ -1,3 +1,7 @@
-# to get started make your server changes in index.ts, once completed you can compile your changes by calling "npx tsc ./src/index/ts"
+# to get started make your server changes in index.ts, once completed you can compile your changes by calling "npx tsc ./src/index.ts"
+
 # this will generate your node file.
-# to run your server call node ./src/index.js and head over to localhost: 3000 in your browser or http client
+
+# to run your server call node ./src/index.js and head over to localhost: 3000 in your browser or http client.
+
+# you can also just call npm run start to generate the js files and start your server.
