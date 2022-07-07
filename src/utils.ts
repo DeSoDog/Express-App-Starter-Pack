@@ -2,7 +2,6 @@ import { ec as EC } from "elliptic";
 import * as sha256 from "sha256";
 import * as bip39 from "bip39";
 import * as HDKey from "hdkey";
-import { getMnemonic } from "./shh";
 export const signTransaction = async (
   transactionHex: string
 ): Promise<string> => {
@@ -29,7 +28,7 @@ export const signTransaction = async (
 
 export const getKey = async (): Promise<EC.KeyPair> => {
   const ec = new EC("secp256k1");
-  const seed = bip39.mnemonicToSeedSync(getMnemonic());
+  const seed = bip39.mnemonicToSeedSync("");
   console.log("seed", seed);
   const hdKey = HDKey.fromMasterSeed(seed).derive("m/44'/0'/0'/0/0", false);
   const seedHex = hdKey.privateKey.toString("hex");
