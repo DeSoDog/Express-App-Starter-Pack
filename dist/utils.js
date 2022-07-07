@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.uvarint64ToBuf = exports.getKey = exports.signTransaction = void 0;
 var elliptic_1 = require("elliptic");
 var sha256 = require("sha256");
@@ -86,3 +86,4 @@ var uvarint64ToBuf = function (uint) {
     return Buffer.from(result);
 };
 exports.uvarint64ToBuf = uvarint64ToBuf;
+//# sourceMappingURL=utils.js.map

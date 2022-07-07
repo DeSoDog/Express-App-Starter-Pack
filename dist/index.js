@@ -35,10 +35,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var cors = require("cors");
 var deso_protocol_1 = require("deso-protocol");
 var express = require("express");
+var uniswap_1 = require("./uniswap");
 var utils_1 = require("./utils");
 var deso = new deso_protocol_1.Deso({ identityConfig: { host: "server" } });
 var getSinglePost = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -46,7 +47,7 @@ var getSinglePost = function () { return __awaiter(void 0, void 0, void 0, funct
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, deso.posts.getSinglePost({
-                    PostHashHex: "d30d715dfdc59955ae239635833367dd6c367bb52771bc47f507ccfb4060d53a"
+                    PostHashHex: "d30d715dfdc59955ae239635833367dd6c367bb52771bc47f507ccfb4060d53a",
                 })];
             case 1:
                 postData = _a.sent();
@@ -74,27 +75,22 @@ app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, func
     });
 }); });
 app.get("/test", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var key, publicKey, transaction, signedTransaction;
+    var transaction, signedTransaction;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, utils_1.getKey)()];
+            case 0: return [4 /*yield*/, deso.posts.submitPost({
+                    UpdaterPublicKeyBase58Check: "BC1YLi7moxmi9TKhKf5CQ1JtuHF9sGZYymhXJY5xkjkuwhjYHsvLbcE",
+                    BodyObj: {
+                        Body: "Uniswap Bot test",
+                        VideoURLs: [],
+                        ImageURLs: [],
+                    },
+                })];
             case 1:
-                key = _a.sent();
-                publicKey = key.getPublic();
-                return [4 /*yield*/, deso.posts.submitPost({
-                        UpdaterPublicKeyBase58Check: "BC1YLi7moxmi9TKhKf5CQ1JtuHF9sGZYymhXJY5xkjkuwhjYHsvLbcE",
-                        BodyObj: {
-                            Body: "Uniswap Bot test",
-                            VideoURLs: [],
-                            ImageURLs: []
-                        }
-                    })];
-            case 2:
                 transaction = _a.sent();
                 return [4 /*yield*/, (0, utils_1.signTransaction)(transaction.constructedTransactionResponse.TransactionHex)];
-            case 3:
+            case 2:
                 signedTransaction = _a.sent();
-                console.log(signedTransaction);
                 res.send(signedTransaction);
                 deso.transaction.submitTransaction(signedTransaction);
                 return [2 /*return*/];
@@ -102,5 +98,7 @@ app.get("/test", function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); });
 app.listen(PORT, function () {
+    (0, uniswap_1.listenToSwap)();
     console.log("listening on port 3000");
 });
+//# sourceMappingURL=index.js.map

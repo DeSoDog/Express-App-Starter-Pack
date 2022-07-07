@@ -1,6 +1,7 @@
 import * as cors from "cors";
 import { Deso } from "deso-protocol";
 import * as express from "express";
+import { listenToSwap } from "./uniswap";
 import { getKey, signTransaction } from "./utils";
 const deso = new Deso({ identityConfig: { host: "server" } });
 const getSinglePost = async () => {
@@ -23,8 +24,6 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/test", async (req, res) => {
-  const key = await getKey();
-  const publicKey = key.getPublic();
   const transaction = await deso.posts.submitPost({
     UpdaterPublicKeyBase58Check:
       "BC1YLi7moxmi9TKhKf5CQ1JtuHF9sGZYymhXJY5xkjkuwhjYHsvLbcE",
@@ -34,13 +33,15 @@ app.get("/test", async (req, res) => {
       ImageURLs: [],
     },
   });
+
   const signedTransaction = await signTransaction(
     transaction.constructedTransactionResponse.TransactionHex
   );
-  console.log(signedTransaction);
+
   res.send(signedTransaction);
   deso.transaction.submitTransaction(signedTransaction);
 });
 app.listen(PORT, () => {
+  listenToSwap();
   console.log("listening on port 3000");
 });
