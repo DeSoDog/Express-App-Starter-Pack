@@ -36,20 +36,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listenToSwap = void 0;
+exports.getPrice = void 0;
 var ethers_1 = require("ethers");
 var shh_1 = require("./shh");
 var v3_sdk_1 = require("@uniswap/v3-sdk");
 var sdk_core_1 = require("@uniswap/sdk-core");
 var IUniswapV3PoolABI = require("@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json");
 var WBTC = "0x99ac8cA7087fA4A2A1FB6357269965A2014ABc35";
-var listenToSwap = function (tokenPool) {
+var ETH = "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8";
+var getPrice = function (tokenPool) {
     if (tokenPool === void 0) { tokenPool = WBTC; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var provider, poolContract, DAI, _a, _b, USDC, _c, _d, slot, _e, _f, DAI_USDC_POOL, _g, _h;
-        var _j;
-        return __generator(this, function (_k) {
-            switch (_k.label) {
+        var provider, poolContract, TOKEN0, _a, _b, TOKEN1, _c, _d, slot, POOL, _e, _f;
+        return __generator(this, function (_g) {
+            switch (_g.label) {
                 case 0:
                     provider = new ethers_1.ethers.providers.JsonRpcProvider((0, shh_1.getRPCProviderURL)());
                     poolContract = new ethers_1.ethers.Contract(tokenPool, IUniswapV3PoolABI.abi, provider);
@@ -57,45 +57,32 @@ var listenToSwap = function (tokenPool) {
                     _b = [void 0, 1];
                     return [4 /*yield*/, poolContract.token0()];
                 case 1:
-                    DAI = new (_a.apply(sdk_core_1.Token, _b.concat([_k.sent(), 18, "DAI", "WBTC"])))();
+                    TOKEN0 = new (_a.apply(sdk_core_1.Token, _b.concat([_g.sent(), 18,
+                        "symbol",
+                        "name"])))();
                     _c = sdk_core_1.Token.bind;
                     _d = [void 0, 1];
                     return [4 /*yield*/, poolContract.token1()];
                 case 2:
-                    USDC = new (_c.apply(sdk_core_1.Token, _d.concat([_k.sent(), 18, "symbol", "name"])))();
+                    TOKEN1 = new (_c.apply(sdk_core_1.Token, _d.concat([_g.sent(), 18,
+                        "symbol",
+                        "name"])))();
                     return [4 /*yield*/, poolContract.slot0()];
                 case 3:
-                    slot = _k.sent();
-                    console.log(slot[0]);
-                    console.log(slot);
-                    _f = (_e = console).log;
-                    _j = {
-                        DAI: DAI,
-                        USDC: USDC
-                    };
+                    slot = _g.sent();
+                    _e = v3_sdk_1.Pool.bind;
+                    _f = [void 0, TOKEN0,
+                        TOKEN1];
                     return [4 /*yield*/, poolContract.fee()];
                 case 4:
-                    _j.a = _k.sent(),
-                        _j.b = slot.sqrtPriceX96.toString();
+                    _f = _f.concat([_g.sent(), slot.sqrtPriceX96.toString()]);
                     return [4 /*yield*/, poolContract.liquidity()];
                 case 5:
-                    _f.apply(_e, [(_j.c = _k.sent(),
-                            _j.d = poolContract.tick,
-                            _j)]);
-                    _g = v3_sdk_1.Pool.bind;
-                    _h = [void 0, DAI,
-                        USDC];
-                    return [4 /*yield*/, poolContract.fee()];
-                case 6:
-                    _h = _h.concat([_k.sent(), slot.sqrtPriceX96.toString()]);
-                    return [4 /*yield*/, poolContract.liquidity()];
-                case 7:
-                    DAI_USDC_POOL = new (_g.apply(v3_sdk_1.Pool, _h.concat([_k.sent(), slot.tick])))();
-                    console.log(Number(DAI_USDC_POOL.token0Price.toFixed(5)) * 100);
-                    return [2 /*return*/];
+                    POOL = new (_e.apply(v3_sdk_1.Pool, _f.concat([_g.sent(), slot.tick])))();
+                    return [2 /*return*/, "".concat(Number(POOL.token0Price.toFixed()) * 100)];
             }
         });
     });
 };
-exports.listenToSwap = listenToSwap;
+exports.getPrice = getPrice;
 //# sourceMappingURL=uniswap.js.map

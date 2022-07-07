@@ -74,14 +74,30 @@ app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, func
         }
     });
 }); });
-app.get("/test", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+app.get("/execute-post", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var btcPrice;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, uniswap_1.getPrice)()];
+            case 1:
+                btcPrice = _a.sent();
+                postPrice("price of BTC today is: ".concat(btcPrice));
+                res.send("posting price, go check your diamond account");
+                return [2 /*return*/];
+        }
+    });
+}); });
+app.listen(PORT, function () {
+    console.log("listening on port 3000");
+});
+var postPrice = function (Body) { return __awaiter(void 0, void 0, void 0, function () {
     var transaction, signedTransaction;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, deso.posts.submitPost({
                     UpdaterPublicKeyBase58Check: "BC1YLi7moxmi9TKhKf5CQ1JtuHF9sGZYymhXJY5xkjkuwhjYHsvLbcE",
                     BodyObj: {
-                        Body: "Uniswap Bot test",
+                        Body: Body,
                         VideoURLs: [],
                         ImageURLs: [],
                     },
@@ -91,14 +107,9 @@ app.get("/test", function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [4 /*yield*/, (0, utils_1.signTransaction)(transaction.constructedTransactionResponse.TransactionHex)];
             case 2:
                 signedTransaction = _a.sent();
-                res.send(signedTransaction);
                 deso.transaction.submitTransaction(signedTransaction);
                 return [2 /*return*/];
         }
     });
-}); });
-app.listen(PORT, function () {
-    (0, uniswap_1.listenToSwap)();
-    console.log("listening on port 3000");
-});
+}); };
 //# sourceMappingURL=index.js.map
