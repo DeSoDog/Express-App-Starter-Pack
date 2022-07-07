@@ -36,71 +36,52 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var cors = require("cors");
-var deso_protocol_1 = require("deso-protocol");
-var express = require("express");
-var utils_1 = require("./utils");
-var deso = new deso_protocol_1.Deso({ identityConfig: { host: "server" } });
-var getSinglePost = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var postData;
+exports.uvarint64ToBuf = exports.getKey = exports.signTransaction = void 0;
+var elliptic_1 = require("elliptic");
+var sha256 = require("sha256");
+var bip39 = require("bip39");
+var HDKey = require("hdkey");
+var signTransaction = function (transactionHex) { return __awaiter(void 0, void 0, void 0, function () {
+    var privateKey, transactionBytes, transactionHash, signature, signatureBytes, signatureLength, signedTransactionBytes;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, deso.posts.getSinglePost({
-                    PostHashHex: "d30d715dfdc59955ae239635833367dd6c367bb52771bc47f507ccfb4060d53a"
-                })];
+            case 0: return [4 /*yield*/, (0, exports.getKey)()];
             case 1:
-                postData = _a.sent();
-                return [2 /*return*/, postData];
+                privateKey = _a.sent();
+                transactionBytes = Buffer.from(transactionHex, "hex");
+                transactionHash = Buffer.from(sha256.x2(transactionBytes), "hex");
+                signature = privateKey.sign(transactionHash, { canonical: true });
+                signatureBytes = Buffer.from(signature.toDER());
+                signatureLength = (0, exports.uvarint64ToBuf)(signatureBytes.length);
+                signedTransactionBytes = Buffer.concat([
+                    transactionBytes.slice(0, -1),
+                    signatureLength,
+                    signatureBytes,
+                ]);
+                return [2 /*return*/, signedTransactionBytes.toString("hex")];
         }
     });
 }); };
-var app = express();
-app.use(express.json());
-app.use(cors());
-var PORT = 3000;
-app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, body;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                response = getSinglePost();
-                return [4 /*yield*/, response];
-            case 1:
-                body = (_a = (_b.sent()).PostFound) === null || _a === void 0 ? void 0 : _a.Body;
-                res.send(body);
-                return [2 /*return*/];
-        }
-    });
-}); });
-app.get("/test", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var key, publicKey, transaction, signedTransaction;
+exports.signTransaction = signTransaction;
+var getKey = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var ec, seed, hdKey, seedHex;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, utils_1.getKey)()];
-            case 1:
-                key = _a.sent();
-                publicKey = key.getPublic();
-                return [4 /*yield*/, deso.posts.submitPost({
-                        UpdaterPublicKeyBase58Check: "BC1YLi7moxmi9TKhKf5CQ1JtuHF9sGZYymhXJY5xkjkuwhjYHsvLbcE",
-                        BodyObj: {
-                            Body: "Uniswap Bot test",
-                            VideoURLs: [],
-                            ImageURLs: []
-                        }
-                    })];
-            case 2:
-                transaction = _a.sent();
-                return [4 /*yield*/, (0, utils_1.signTransaction)(transaction.constructedTransactionResponse.TransactionHex)];
-            case 3:
-                signedTransaction = _a.sent();
-                console.log(signedTransaction);
-                res.send(signedTransaction);
-                deso.transaction.submitTransaction(signedTransaction);
-                return [2 /*return*/];
-        }
+        ec = new elliptic_1.ec("secp256k1");
+        seed = bip39.mnemonicToSeedSync("weather noble barely volume bind lemon raven cruel diamond hover siren canvas");
+        console.log("seed", seed);
+        hdKey = HDKey.fromMasterSeed(seed).derive("m/44'/0'/0'/0/0", false);
+        seedHex = hdKey.privateKey.toString("hex");
+        return [2 /*return*/, ec.keyFromPrivate(seedHex)];
     });
-}); });
-app.listen(PORT, function () {
-    console.log("listening on port 3000");
-});
+}); };
+exports.getKey = getKey;
+var uvarint64ToBuf = function (uint) {
+    var result = [];
+    while (uint >= 0x80) {
+        result.push(Number((BigInt(uint) & BigInt(0xff)) | BigInt(0x80)));
+        uint = Number(BigInt(uint) >> BigInt(7));
+    }
+    result.push(uint | 0);
+    return Buffer.from(result);
+};
+exports.uvarint64ToBuf = uvarint64ToBuf;
