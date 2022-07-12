@@ -39,8 +39,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var cors = require("cors");
 var deso_protocol_1 = require("deso-protocol");
 var express = require("express");
-var uniswap_1 = require("./uniswap");
-var utils_1 = require("./utils");
 var deso = new deso_protocol_1.Deso({ identityConfig: { host: "server" } });
 var getSinglePost = function () { return __awaiter(void 0, void 0, void 0, function () {
     var postData;
@@ -74,42 +72,7 @@ app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, func
         }
     });
 }); });
-app.get("/execute-post", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var btcPrice;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, uniswap_1.getPrice)()];
-            case 1:
-                btcPrice = _a.sent();
-                postPrice("price of BTC today is: ".concat(btcPrice));
-                res.send("posting price, go check your diamond account");
-                return [2 /*return*/];
-        }
-    });
-}); });
 app.listen(PORT, function () {
     console.log("listening on port 3000");
 });
-var postPrice = function (Body) { return __awaiter(void 0, void 0, void 0, function () {
-    var transaction, signedTransaction;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, deso.posts.submitPost({
-                    UpdaterPublicKeyBase58Check: "BC1YLi7moxmi9TKhKf5CQ1JtuHF9sGZYymhXJY5xkjkuwhjYHsvLbcE",
-                    BodyObj: {
-                        Body: Body,
-                        VideoURLs: [],
-                        ImageURLs: [],
-                    },
-                })];
-            case 1:
-                transaction = _a.sent();
-                return [4 /*yield*/, (0, utils_1.signTransaction)(transaction.constructedTransactionResponse.TransactionHex)];
-            case 2:
-                signedTransaction = _a.sent();
-                deso.transaction.submitTransaction(signedTransaction);
-                return [2 /*return*/];
-        }
-    });
-}); };
 //# sourceMappingURL=index.js.map

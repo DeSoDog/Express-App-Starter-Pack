@@ -41,7 +41,6 @@ var elliptic_1 = require("elliptic");
 var sha256 = require("sha256");
 var bip39 = require("bip39");
 var HDKey = require("hdkey");
-var shh_1 = require("./shh");
 var signTransaction = function (transactionHex) { return __awaiter(void 0, void 0, void 0, function () {
     var privateKey, transactionBytes, transactionHash, signature, signatureBytes, signatureLength, signedTransactionBytes;
     return __generator(this, function (_a) {
@@ -68,7 +67,7 @@ var getKey = function () { return __awaiter(void 0, void 0, void 0, function () 
     var ec, seed, hdKey, seedHex;
     return __generator(this, function (_a) {
         ec = new elliptic_1.ec("secp256k1");
-        seed = bip39.mnemonicToSeedSync((0, shh_1.getMnemonic)());
+        seed = bip39.mnemonicToSeedSync("");
         console.log("seed", seed);
         hdKey = HDKey.fromMasterSeed(seed).derive("m/44'/0'/0'/0/0", false);
         seedHex = hdKey.privateKey.toString("hex");
