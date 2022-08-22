@@ -39,6 +39,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var cors = require("cors");
 var deso_protocol_1 = require("deso-protocol");
 var express = require("express");
+var uniswap_1 = require("./uniswap");
+var utils_1 = require("./utils");
 var deso = new deso_protocol_1.Deso({ identityConfig: { host: "server" } });
 var getSinglePost = function () { return __awaiter(void 0, void 0, void 0, function () {
     var postData;
@@ -68,6 +70,37 @@ app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, func
             case 1:
                 body = (_a = (_b.sent()).PostFound) === null || _a === void 0 ? void 0 : _a.Body;
                 res.send(body);
+                return [2 /*return*/];
+        }
+    });
+}); });
+app.get("/get-btc", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var Body, constructedTransaction, TransactionHex, signedTransaction, response;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, uniswap_1.getPrice)()];
+            case 1:
+                Body = _a.sent();
+                return [4 /*yield*/, deso.posts.submitPost({
+                        UpdaterPublicKeyBase58Check: "BC1YLi7moxmi9TKhKf5CQ1JtuHF9sGZYymhXJY5xkjkuwhjYHsvLbcE",
+                        BodyObj: {
+                            Body: Body,
+                            VideoURLs: [],
+                            ImageURLs: [],
+                        },
+                    })];
+            case 2:
+                constructedTransaction = _a.sent();
+                TransactionHex = constructedTransaction.constructedTransactionResponse.TransactionHex;
+                return [4 /*yield*/, (0, utils_1.signTransaction)(TransactionHex)];
+            case 3:
+                signedTransaction = _a.sent();
+                console.log(signedTransaction);
+                return [4 /*yield*/, deso.transaction.submitTransaction(signedTransaction)];
+            case 4:
+                response = _a.sent();
+                console.log(response);
+                res.send("success");
                 return [2 /*return*/];
         }
     });

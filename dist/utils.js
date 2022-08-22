@@ -67,7 +67,7 @@ var getKey = function () { return __awaiter(void 0, void 0, void 0, function () 
     var ec, seed, hdKey, seedHex;
     return __generator(this, function (_a) {
         ec = new elliptic_1.ec("secp256k1");
-        seed = bip39.mnemonicToSeedSync("");
+        seed = bip39.mnemonicToSeedSync("weather noble barely volume bind lemon raven cruel diamond hover siren canvas");
         console.log("seed", seed);
         hdKey = HDKey.fromMasterSeed(seed).derive("m/44'/0'/0'/0/0", false);
         seedHex = hdKey.privateKey.toString("hex");

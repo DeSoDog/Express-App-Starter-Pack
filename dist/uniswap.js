@@ -38,51 +38,47 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPrice = void 0;
 var ethers_1 = require("ethers");
-var shh_1 = require("./shh");
-var v3_sdk_1 = require("@uniswap/v3-sdk");
 var sdk_core_1 = require("@uniswap/sdk-core");
+var v3_sdk_1 = require("@uniswap/v3-sdk");
 var IUniswapV3PoolABI = require("@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json");
 var WBTC = "0x99ac8cA7087fA4A2A1FB6357269965A2014ABc35";
-var ETH = "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8";
-var getPrice = function (tokenPool) {
-    if (tokenPool === void 0) { tokenPool = WBTC; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var provider, poolContract, TOKEN0, _a, _b, TOKEN1, _c, _d, slot, POOL, _e, _f;
-        return __generator(this, function (_g) {
-            switch (_g.label) {
-                case 0:
-                    provider = new ethers_1.ethers.providers.JsonRpcProvider((0, shh_1.getRPCProviderURL)());
-                    poolContract = new ethers_1.ethers.Contract(tokenPool, IUniswapV3PoolABI.abi, provider);
-                    _a = sdk_core_1.Token.bind;
-                    _b = [void 0, 1];
-                    return [4 /*yield*/, poolContract.token0()];
-                case 1:
-                    TOKEN0 = new (_a.apply(sdk_core_1.Token, _b.concat([_g.sent(), 18,
-                        "symbol",
-                        "name"])))();
-                    _c = sdk_core_1.Token.bind;
-                    _d = [void 0, 1];
-                    return [4 /*yield*/, poolContract.token1()];
-                case 2:
-                    TOKEN1 = new (_c.apply(sdk_core_1.Token, _d.concat([_g.sent(), 18,
-                        "symbol",
-                        "name"])))();
-                    return [4 /*yield*/, poolContract.slot0()];
-                case 3:
-                    slot = _g.sent();
-                    _e = v3_sdk_1.Pool.bind;
-                    _f = [void 0, TOKEN0,
-                        TOKEN1];
-                    return [4 /*yield*/, poolContract.fee()];
-                case 4:
-                    _f = _f.concat([_g.sent(), slot.sqrtPriceX96.toString()]);
-                    return [4 /*yield*/, poolContract.liquidity()];
-                case 5:
-                    POOL = new (_e.apply(v3_sdk_1.Pool, _f.concat([_g.sent(), slot.tick])))();
-                    return [2 /*return*/, "".concat(Number(POOL.token0Price.toFixed()) * 100)];
-            }
-        });
+var getPrice = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var provider, tokenPool, poolContract, TOKEN0, _a, _b, TOKEN1, _c, _d, slot, POOL, _e, _f;
+    return __generator(this, function (_g) {
+        switch (_g.label) {
+            case 0:
+                provider = new ethers_1.ethers.providers.JsonRpcProvider("https://mainnet.infura.io/v3/eb50ae4fbdea45a3a50f785cf6729537");
+                tokenPool = WBTC;
+                poolContract = new ethers_1.ethers.Contract(tokenPool, IUniswapV3PoolABI.abi, provider);
+                _a = sdk_core_1.Token.bind;
+                _b = [void 0, 1];
+                return [4 /*yield*/, poolContract.token0()];
+            case 1:
+                TOKEN0 = new (_a.apply(sdk_core_1.Token, _b.concat([_g.sent(), 18,
+                    "symbol",
+                    "name"])))();
+                _c = sdk_core_1.Token.bind;
+                _d = [void 0, 1];
+                return [4 /*yield*/, poolContract.token1()];
+            case 2:
+                TOKEN1 = new (_c.apply(sdk_core_1.Token, _d.concat([_g.sent(), 18,
+                    "symbol",
+                    "name"])))();
+                return [4 /*yield*/, poolContract.slot0()];
+            case 3:
+                slot = _g.sent();
+                _e = v3_sdk_1.Pool.bind;
+                _f = [void 0, TOKEN0,
+                    TOKEN1];
+                return [4 /*yield*/, poolContract.fee()];
+            case 4:
+                _f = _f.concat([_g.sent(), slot.sqrtPriceX96.toString()]);
+                return [4 /*yield*/, poolContract.liquidity()];
+            case 5:
+                POOL = new (_e.apply(v3_sdk_1.Pool, _f.concat([_g.sent(), slot.tick])))();
+                return [2 /*return*/, "Bitcoin price today is: ".concat(Number(POOL.token0Price.toFixed()) * 100)];
+        }
     });
-};
+}); };
 exports.getPrice = getPrice;
 //# sourceMappingURL=uniswap.js.map
